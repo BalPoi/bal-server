@@ -6,7 +6,7 @@ RUN mvn dependency:go-offline -B
 COPY src src
 RUN mvn clean package -DskipTests
 
-FROM eclipse-temurin:17-alpine
+FROM eclipse-temurin:17-alpine AS run-stage
 WORKDIR /app
 COPY --from=build-stage /app/target/*-shaded.jar app.jar
 EXPOSE 8080
