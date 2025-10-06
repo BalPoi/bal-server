@@ -36,9 +36,9 @@
         <start-class>by.bal.balserver.BalServerApplication</start-class>
 
         <!--gRPC-->
-        <protobuf-maven-plugin.version>3.10.0</protobuf-maven-plugin.version>
-        <protobuf-java.version>4.31.1</protobuf-java.version>
-        <grpc.version>1.75.0</grpc.version>
+        <protobuf-maven-plugin.version>0.6.1</protobuf-maven-plugin.version>
+        <protobuf-maven-plugin.pluginArtifact.version>1.75.0</protobuf-maven-plugin.pluginArtifact.version>
+        <protobuf-maven-plugin.protocArtifact.version>3.25.5</protobuf-maven-plugin.protocArtifact.version>
     </properties>
 
     <dependencies>
@@ -95,6 +95,13 @@
     </dependencies>
 
     <build>
+        <extensions>
+            <extension>
+                <groupId>kr.motd.maven</groupId>
+                <artifactId>os-maven-plugin</artifactId>
+                <version>1.7.1</version>
+            </extension>
+        </extensions>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -125,24 +132,23 @@
 
             <!--gRPC: compile proto files-->
             <plugin>
-                <groupId>io.github.ascopes</groupId>
+                <groupId>org.xolstice.maven.plugins</groupId>
                 <artifactId>protobuf-maven-plugin</artifactId>
                 <version>${protobuf-maven-plugin.version}</version>
                 <configuration>
-                    <protocVersion>${protobuf-java.version}</protocVersion>
-                    <binaryMavenPlugins>
-                        <binaryMavenPlugin>
-                            <groupId>io.grpc</groupId>
-                            <artifactId>protoc-gen-grpc-java</artifactId>
-                            <version>${grpc.version}</version>
-                            <options>@generated=omit</options>
-                        </binaryMavenPlugin>
-                    </binaryMavenPlugins>
+                    <pluginId>grpc-java</pluginId>
+                    <pluginArtifact>
+                        io.grpc:protoc-gen-grpc-java:${protobuf-maven-plugin.pluginArtifact.version}:exe:${os.detected.classifier}
+                    </pluginArtifact>
+                    <protocArtifact>
+                        com.google.protobuf:protoc:${protobuf-maven-plugin.protocArtifact.version}:exe:${os.detected.classifier}
+                    </protocArtifact>
                 </configuration>
                 <executions>
                     <execution>
                         <goals>
-                            <goal>generate</goal>
+                            <goal>compile</goal>
+                            <goal>compile-custom</goal>
                         </goals>
                     </execution>
                 </executions>

@@ -4,7 +4,7 @@ COPY pom.xml pom.xml
 #Make VOLUME for speeding dependency collectioning
 RUN mvn dependency:go-offline -B
 COPY src src
-RUN mvn clean package -DskipTests
+RUN mvn clean package -DskipTests -X
 
 FROM eclipse-temurin:17-alpine AS run-stage
 WORKDIR /app
