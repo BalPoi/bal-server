@@ -1,8 +1,8 @@
-package by.bal.balserver.api.grpc;
+package by.bal.server.api.grpc;
 
-import by.bal.balserver.proto.HelloReply;
-import by.bal.balserver.proto.HelloRequest;
-import by.bal.balserver.proto.SimpleGrpc;
+import by.bal.server.proto.HelloReply;
+import by.bal.server.proto.HelloRequest;
+import by.bal.server.proto.SimpleGrpc;
 import io.grpc.stub.StreamObserver;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

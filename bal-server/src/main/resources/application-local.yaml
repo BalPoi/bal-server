@@ -6,6 +6,9 @@ logging:
     root: INFO
 
 spring:
+  grpc:
+    server:
+      port: 8081
   application:
     name: bal-server
   datasource:

@@ -1,4 +1,4 @@
-package by.bal.balserver;
+package by.bal.server;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

@@ -1,4 +1,4 @@
-package by.bal.balserver.api.grpc;
+package by.bal.server.api.grpc;
 
 import io.grpc.Metadata;
 import io.grpc.Status;

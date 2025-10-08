@@ -1,4 +1,4 @@
-package by.bal.balserver.api.websocket;
+package by.bal.server.api.websocket;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
