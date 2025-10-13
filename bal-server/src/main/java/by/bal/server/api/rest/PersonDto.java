@@ -1,4 +1,4 @@
-package by.bal.server.api;
+package by.bal.server.api.rest;
 
 import java.util.List;
 import java.util.Map;

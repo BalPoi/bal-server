@@ -28,6 +28,7 @@ public class TestRxWebSocketHandler implements WebSocketHandler {
                                .map(WebSocketMessage::getPayloadAsText)
                                .doOnNext(it -> log.info("IN: {}", it))
                                .doFinally(signal -> log.info("WebSocket session closes: {}", signal))
+                               .doOnError(e -> log.error("Caught exception {}: {}", e.getClass().getSimpleName(), e.getLocalizedMessage()))
                                .then();
 
         return Mono.zip(in, out).then();

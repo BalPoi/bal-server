@@ -1,6 +1,4 @@
 package by.bal.server.api.rest;
-
-import by.bal.server.api.PersonDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
