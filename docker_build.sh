@@ -1,4 +1,6 @@
 #!/usr/bin/env sh
+./mvnw clean package -DskipTests -U -B && \
+
 echo 'Building image:' && \
 docker build -t balpoi/bal-server ./ && \
 
