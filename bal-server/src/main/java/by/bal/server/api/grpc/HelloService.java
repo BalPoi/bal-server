@@ -2,9 +2,11 @@ package by.bal.server.api.grpc;
 
 import io.grpc.stub.StreamObserver;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBooleanProperty;
 import org.springframework.stereotype.Service;
 
 @Service
+@ConditionalOnBooleanProperty(name = "bal-server.api.grpc.enabled", matchIfMissing = true)
 @Slf4j
 public class HelloService extends SimpleGrpc.SimpleImplBase {
 

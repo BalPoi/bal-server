@@ -4,10 +4,12 @@ import io.grpc.Metadata;
 import io.grpc.Status;
 import io.grpc.StatusException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBooleanProperty;
 import org.springframework.grpc.server.exception.GrpcExceptionHandler;
 import org.springframework.stereotype.Component;
 
 @Component
+@ConditionalOnBooleanProperty(name = "bal-server.api.grpc.enabled", matchIfMissing = true)
 @Slf4j
 public class MyGrpcExceptionHandler implements GrpcExceptionHandler {
     @Override

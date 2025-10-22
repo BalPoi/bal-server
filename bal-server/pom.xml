@@ -39,11 +39,13 @@
     </properties>
 
     <dependencies>
+        <!--bal-server modules-->
         <dependency>
             <groupId>by.bal</groupId>
             <artifactId>bal-server-api</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+
 
         <!--Utility-->
         <dependency>
@@ -54,11 +56,13 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <version>1.18.40</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
+            <version>3.18.0</version>
         </dependency>
 
 
@@ -73,6 +77,12 @@
             <groupId>org.springframework.grpc</groupId>
             <artifactId>spring-grpc-spring-boot-starter</artifactId>
             <version>0.11.0</version>
+        </dependency>
+
+        <!--Kafka-->
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
         </dependency>
 
 

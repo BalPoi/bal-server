@@ -1,6 +1,7 @@
 package by.bal.server.api.websocket;
 
 import jakarta.annotation.Nonnull;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBooleanProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.HandlerMapping;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Configuration
+@ConditionalOnBooleanProperty(name = "bal-server.api.websocket.enabled", matchIfMissing = true)
 class WebSocketHandlersConfig {
 
     @Bean

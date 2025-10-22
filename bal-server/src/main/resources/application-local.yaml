@@ -2,15 +2,23 @@ server:
   port: 8080
 
 logging:
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%-16.16thread] %highlight(%-5level) %clr(%-32.32logger{32}){cyan} %msg%n"
   level:
     root: INFO
+    org.apache.kafka.clients.consumer.ConsumerConfig: off
+    org.apache.kafka.clients.producer.ProducerConfig: off
 
 spring:
+  application:
+    name: bal-server
+
+  #====gRPC properties====
   grpc:
     server:
       port: 8081
-  application:
-    name: bal-server
+
+  #====DB properties====
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/postgres
@@ -18,3 +26,69 @@ spring:
     password: password
   jooq:
     sql-dialect: POSTGRES
+
+  #====Kafka properties====
+  kafka:
+    bootstrap-servers: localhost:9092
+    #Поведение продюсеров как и консюмеров можно задавать с конфигаз Kafka, так и переопределять тут
+    producer:
+      #-1 -
+      # 0 -
+      # 1 -
+      # all -
+      acks: all
+      #При пропертях batch.size и linger.ms паблищер аккумулирует в батч иенты и отправляет только
+      #если прошло linger.ms или уже набрался batch-size
+      batch-size: 16384 #Максимальный размер батча [16384]
+      properties: #Доп проперти, обычно получаемые от Kafka брокера
+        linger:
+          ms: 1000 #Время, которое даётся на сборку батча [5ms]
+      #value-serializer: IGNORED #See by.bal.server.api.kafka.KafkaConfig
+    consumer:
+      group-id: bal-server #Задаёт всем консюмерам единый group id
+
+      #Что делать, когда нет инфы о последнем оффсете для этой группы:
+      #earliest - взять старейший доступный (все имеющиеся ивенты будут обработаны)
+      #latest - взять новеший (будет обработан только последний)
+      #exception - кидаем исключение
+      #none - кидаем исключение, только если последний оффсет для группы был уже удалён
+      auto-offset-reset: earliest
+
+      max-poll-records: 500 #Максимальный размер ответа poll(). Соответствено batch.size()<=maxPollRecords [500]
+
+      #Максимальное время ожидания пока наберётся fetch-min-size, иначе берётся что есть [500 ms]
+      #The maximum amount of time the server will block before answering the fetch request there isn’t sufficient data to immediately satisfy the requirement given by fetch.min.bytes.
+      fetch-max-wait: 500
+
+      #The minimum amount of data the server should return for a poll request [1 byte]
+      #Setting this to a larger value will cause the server to wait for larger amounts of data to accumulate which can improve server throughput a bit at the cost of some additional latency.
+      fetch-min-size: 1
+
+      #enable-auto-commit: IGNORED #See by.bal.server.api.kafka.KafkaConfig #/!\Если задано false, то во всех консумерах нужно делать комит саммому
+      #value-deserializer: IGNORED #See by.bal.server.api.kafka.KafkaConfig
+      #properties:
+        #spring.json.trusted.packages: IGNORED #See by.bal.server.api.kafka.KafkaConfig
+
+    listener:
+      #/!\ Если ack-mode manual и enable-auto-commit=false, то даже если консюмер не принимает Acknowledgment, то автокомит не происходит
+      ack-mode: manual #Работает только если enable-auto-commit=false
+      concurrency: 1 #Single-threaded
+      type: single #single / batch
+
+    retry: #Non-Blocking Retries /!\NOT supported with Batch Listeners and Container Transactions
+      topic:
+        enabled: false
+        attempts: 3
+
+
+#====Service properties====
+bal-server:
+  api:
+    rest:
+      enabled: true
+    kafka:
+      enabled: true
+    grpc:
+      enabled: false
+    websocket:
+      enabled: false

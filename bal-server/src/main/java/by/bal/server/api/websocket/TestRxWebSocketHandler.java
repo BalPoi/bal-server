@@ -1,6 +1,7 @@
 package by.bal.server.api.websocket;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBooleanProperty;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.socket.WebSocketHandler;
 import org.springframework.web.reactive.socket.WebSocketMessage;
@@ -11,6 +12,7 @@ import reactor.core.publisher.Mono;
 import java.time.Duration;
 
 @Component
+@ConditionalOnBooleanProperty(name = "bal-server.api.websocket.enabled", matchIfMissing = true)
 @WebSocketMapping("/ws/test")
 @Slf4j
 public class TestRxWebSocketHandler implements WebSocketHandler {
