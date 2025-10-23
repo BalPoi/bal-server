@@ -3,10 +3,13 @@ package by.bal.server.api.kafka;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.serialization.ByteArrayDeserializer;
 import org.springframework.boot.autoconfigure.kafka.DefaultKafkaConsumerFactoryCustomizer;
 import org.springframework.boot.autoconfigure.kafka.DefaultKafkaProducerFactoryCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.kafka.support.converter.JsonMessageConverter;
+import org.springframework.kafka.support.converter.StringJsonMessageConverter;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 
@@ -34,13 +37,23 @@ public class KafkaConfig {
        return consumerFactory -> {
            Map<String, Object> staticConsumersProps = Map.of(
                    ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false,
-                   ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class,
+                   ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class, // Привязка к __Type__ хедеру
+
+                   // ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ByteArrayDeserializer.class, // Отвязка от хедера __Type__
+                   // JsonDeserializer.USE_TYPE_INFO_HEADERS, false,
+
                    // Требуется для JsonDeserializer
                    JsonDeserializer.TRUSTED_PACKAGES, "by.bal.server.api.kafka,by.bal.server.api.rest",
                    // Маппинг на случий несовпадения пакетов DTO классов между отправителями/получателями
-                   JsonDeserializer.TYPE_MAPPINGS, "by.another.dev.Pet:"+Pet.class.getCanonicalName()
+                   JsonDeserializer.TYPE_MAPPINGS, "by.another.dev.Pet:" + Pet.class.getCanonicalName()
            );
            consumerFactory.updateConfigs(staticConsumersProps);
        };
    }
+
+    // Отвязка от хедера __Type__
+    // @Bean
+    public JsonMessageConverter jsonMessageConverter() {
+        return new StringJsonMessageConverter();
+    }
 }

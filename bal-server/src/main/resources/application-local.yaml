@@ -79,6 +79,36 @@ spring:
       topic:
         enabled: false
         attempts: 3
+#Схема бинов Kafka при 2 топиках и currency = 3
+#Application Context
+#├── KafkaListenerAnnotationBeanPostProcessor (1 instance) # Регистрирует @KafkaListener
+#├── ConcurrentKafkaListenerContainerFactory (1 instance) # Дефолтная общая фабрика ConcurrentMessageListenerContainer
+#├── ConsumerFactory (1 instance) # Дефолтная общая фабрика Kafka Consumer для KafkaMessageListener контейнеров
+#├── ConcurrentMessageListenerContainer #0 (for topic1)
+#│   ├── KafkaMessageListenerContainer #0-0-С-1 → poll() → ваш метод
+#│   ├── KafkaMessageListenerContainer #0-1-С-1 → poll() → ваш метод
+#│   └── KafkaMessageListenerContainer #0-2-С-1 → poll() → ваш метод
+#└── ConcurrentMessageListenerContainer #1 (for topic2)
+#    ├── KafkaMessageListenerContainer #1-0-С-1 → poll() → ваш метод
+#    ├── KafkaMessageListenerContainer #1-1-С-1 → poll() → ваш метод
+#    └── KafkaMessageListenerContainer #1-2-С-1 → poll() → ваш метод
+#Если currency = 1, то ConcurrentMessageListenerContainer всё равно есть, но KafkaMessageListenerContainer один
+#Application Context
+#├── KafkaListenerAnnotationBeanPostProcessor (1 instance)
+#├── ConcurrentKafkaListenerContainerFactory (1 instance)
+#├── ConsumerFactory (1 instance)
+#├── ConcurrentMessageListenerContainer #1 (for topic1)
+#│   └── KafkaMessageListenerContainer #1-1 (Thread #1) → poll() → ваш метод для topic1
+#└── ConcurrentMessageListenerContainer #2 (for topic2)
+#    └── KafkaMessageListenerContainer #2-1 (Thread #2) → poll() → ваш метод для topic2
+
+#Структура названия потока KafkaMessageListenerContainer:
+#org.springframework.kafka.KafkaListenerEndpointContainer#{containerId}-{consumerIndex}-{threadType}-{threadId}, где
+#containerId - уникальный идентификатор ConcurrentMessageListenerContainer, начинается с 0
+#consumerIndex - уникальный идентификатор KafkaMessageListenerContainer, начинается с 0
+#threadType - C(Consumer), E(Error handler), S(Scheduler)
+#threadId - просто порядковый номер потока, всегда равен 1
+
 
 
 #====Service properties====

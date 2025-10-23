@@ -17,11 +17,12 @@ import java.util.concurrent.TimeUnit;
 public class SimplePetProducer {
     private final KafkaTemplate<String, Pet> kafkaTemplate;
 
-    // @Scheduled(fixedDelay = 5, timeUnit = TimeUnit.SECONDS)
+    @Scheduled(fixedDelay = 5, timeUnit = TimeUnit.MINUTES)
     void produce() {
         Pet.generate().limit(10).forEach(pet -> {
             log.info("[>>> bal-topic-pet]: {}", pet);
             kafkaTemplate.send("bal-topic-pet", pet);
+            System.out.println(Thread.getAllStackTraces().keySet());
         });
     }
 }
