@@ -1,5 +1,6 @@
 package by.bal.server.api.kafka.consumer;
 
+import by.bal.server.api.kafka.Man;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBooleanProperty;
 import org.springframework.kafka.annotation.KafkaHandler;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-//@Component
+@Component
 @ConditionalOnBooleanProperty(name = "bal-server.api.kafka.enabled", matchIfMissing = true)
 @KafkaListener(groupId = "bal-server-ack", topics = "bal-topic")
 @Slf4j
@@ -21,7 +22,7 @@ public class AckConsumer {
     Если spring.kafka.listener.type=single, будет использоваться одиночный метод, batch - List<>
      */
     @KafkaHandler
-    void consume(Acknowledgment ack, @Payload String payload) {
+    void consume(Acknowledgment ack, @Payload Man payload) {
         log.info("CONSUME w ACK <<< bal-topic");
         log.info("Consumed string: {}", payload);
 
@@ -29,7 +30,7 @@ public class AckConsumer {
     }
 
     @KafkaHandler
-    void consume(Acknowledgment ack, @Payload List<String> payload) {
+    void consume(Acknowledgment ack, @Payload List<Man> payload) {
         log.info("CONSUME w ACK BATCH <<< bal-topic");
         log.info("Consumed batch: {}", payload);
         ack.acknowledge();

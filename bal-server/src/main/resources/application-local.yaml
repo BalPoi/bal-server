@@ -31,7 +31,7 @@ spring:
   kafka:
     bootstrap-servers: localhost:9092
     #Поведение продюсеров как и консюмеров можно задавать с конфигаз Kafka, так и переопределять тут
-    producer:
+    producer: #Проперти для ProducerFactory
       #-1 -
       # 0 -
       # 1 -
@@ -43,8 +43,8 @@ spring:
       properties: #Доп проперти, обычно получаемые от Kafka брокера
         linger:
           ms: 1000 #Время, которое даётся на сборку батча [5ms]
-      #value-serializer: IGNORED #See by.bal.server.api.kafka.KafkaConfig
-    consumer:
+      #value-serializer: IGNORED #See by.bal.server.api.kafka.config.KafkaConfig
+    consumer: #Проперти для ConsumerFactory
       group-id: bal-server #Задаёт всем консюмерам единый group id
 
       #Что делать, когда нет инфы о последнем оффсете для этой группы:
@@ -64,21 +64,24 @@ spring:
       #Setting this to a larger value will cause the server to wait for larger amounts of data to accumulate which can improve server throughput a bit at the cost of some additional latency.
       fetch-min-size: 1
 
-      #enable-auto-commit: IGNORED #See by.bal.server.api.kafka.KafkaConfig #/!\Если задано false, то во всех консумерах нужно делать комит саммому
-      #value-deserializer: IGNORED #See by.bal.server.api.kafka.KafkaConfig
+      #enable-auto-commit: IGNORED #See by.bal.server.api.kafka.config.KafkaConfig #/!\Если задано false, то во всех консумерах нужно делать комит саммому
+      #value-deserializer: IGNORED #See by.bal.server.api.kafka.config.KafkaConfig
       #properties:
-        #spring.json.trusted.packages: IGNORED #See by.bal.server.api.kafka.KafkaConfig
+        #spring.json.trusted.packages: IGNORED #See by.bal.server.api.kafka.config.KafkaConfig
 
-    listener:
+    listener: #Проперти для ConcurrentKafkaListenerContainerFactory
       #/!\ Если ack-mode manual и enable-auto-commit=false, то даже если консюмер не принимает Acknowledgment, то автокомит не происходит
-      ack-mode: manual #Работает только если enable-auto-commit=false
+      ack-mode: manual #Используется только если enable-auto-commit=false
       concurrency: 1 #Single-threaded
-      type: single #single / batch
+      #type: single #See by.bal.server.api.kafka.config.KafkaConfig #single / batch
 
     retry: #Non-Blocking Retries /!\NOT supported with Batch Listeners and Container Transactions
       topic:
         enabled: false
         attempts: 3
+        backoff:
+          delay: 1s
+          multiplier: 1.5
 #Схема бинов Kafka при 2 топиках и currency = 3
 #Application Context
 #├── KafkaListenerAnnotationBeanPostProcessor (1 instance) # Регистрирует @KafkaListener
@@ -108,6 +111,20 @@ spring:
 #consumerIndex - уникальный идентификатор KafkaMessageListenerContainer, начинается с 0
 #threadType - C(Consumer), E(Error handler), S(Scheduler)
 #threadId - просто порядковый номер потока, всегда равен 1
+
+#Kafka автоконфиги:
+#KafkaAutoConfiguration - Общая настройка инфраструктуры Kafka
+#Создаваемые бины: KafkaTemplate, ConsumerFactory, ProducerFactory
+#Условие активации: Наличие классов KafkaTemplate, ProducerFactory и т.д. в classpath
+#Взаимосвязь: Родительская, создает базовые компоненты
+#
+#KafkaAnnotationDrivenConfiguration
+#Конфигурация для обработки @KafkaListener
+#Создаваемые бины: ConcurrentKafkaListenerContainerFactory, KafkaListenerContainerFactory
+#Условие активации: Наличие аннотации @EnableKafka и класса KafkaListenerContainerFactory в classpath
+#Взаимосвязь: Дочерняя, использует бины (например, ConsumerFactory) из KafkaAutoConfiguration
+#
+
 
 
 

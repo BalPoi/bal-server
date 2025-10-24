@@ -1,5 +1,6 @@
 package by.bal.server;
 
+import by.bal.server.api.kafka.Man;
 import by.bal.server.api.kafka.Pet;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,29 +20,18 @@ import java.util.UUID;
 @Slf4j
 public class HelloController {
 
-    //Заинжектится один и тот же бин с JsonSerializer
-    private final KafkaTemplate<String, String> kafkaTemplate;
-    private final KafkaTemplate<String, Pet> petKafkaTemplate;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @GetMapping
     void hello(@RequestBody String text) {
         log.info("Manual producer: {}", text);
-        kafkaTemplate.send("bal-topic", "{\"name\":\"%s\",\"age\":24}".formatted(text));
-    }
-
-    @GetMapping("/batch")
-    void hello(@RequestParam Integer size) {
-        UUID uuid = UUID.randomUUID();
-        log.info("Batch producer. UUID={} Size={}", uuid, size);
-        for (int i = 0; i < size; i++) {
-            log.info(">>> {}[{}]", uuid, i);
-            kafkaTemplate.send("bal-topic", uuid + "[" + i + "]");
-        }
+        Man man = Man.builder().name(text).age(24).build();
+        kafkaTemplate.send("bal-topic", man);
     }
 
     @GetMapping("/pet")
     void helloPet() {
         Pet pet = Pet.builder().name("Сёма").type("Кот").age(4).build();
-        petKafkaTemplate.send("bal-pet-topic", pet);
+        kafkaTemplate.send("bal-pet-topic", pet);
     }
 }

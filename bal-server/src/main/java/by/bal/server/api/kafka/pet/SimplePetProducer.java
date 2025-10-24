@@ -1,4 +1,4 @@
-package by.bal.server.api.kafka.producer;
+package by.bal.server.api.kafka.pet;
 
 import by.bal.server.api.kafka.Pet;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,6 @@ public class SimplePetProducer {
         Pet.generate().limit(10).forEach(pet -> {
             log.info("[>>> bal-topic-pet]: {}", pet);
             kafkaTemplate.send("bal-topic-pet", pet);
-            System.out.println(Thread.getAllStackTraces().keySet());
         });
     }
 }
