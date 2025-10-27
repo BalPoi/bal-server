@@ -8,6 +8,8 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.TopicPartition;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBooleanProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.kafka.DefaultKafkaConsumerFactoryCustomizer;
 import org.springframework.boot.autoconfigure.kafka.DefaultKafkaProducerFactoryCustomizer;
 import org.springframework.context.annotation.Bean;
@@ -40,6 +42,7 @@ import static java.lang.Boolean.TRUE;
  * Дополнительные проперти для Kafka, которые не меняются между различными конфигурациями
  */
 @Configuration(proxyBeanMethods = false)
+@ConditionalOnProperty(name = "bal-server.api.kafka.mode", havingValue = "normal")
 @Slf4j
 public class KafkaConfig {
 
@@ -48,9 +51,6 @@ public class KafkaConfig {
      */
     @SuppressWarnings("JavadocReference")
     private static final String CONTAINER_FACTORY_BEAN_NAME = "kafkaListenerContainerFactory";
-    private static final BiFunction<ConsumerRecord<?, ?>, Exception, TopicPartition>
-            DESERIALIZATION_DLT_TOPIC_RESOLVER =
-            (cr, e) -> new TopicPartition(cr.topic() + "-deserialization-dlt", 0);
 
     /**
      * Постпроцессор для бина kafkaListenerContainerFactory для дополнительной конфигурации фабрики<br/>

@@ -64,7 +64,7 @@ spring:
       #Setting this to a larger value will cause the server to wait for larger amounts of data to accumulate which can improve server throughput a bit at the cost of some additional latency.
       fetch-min-size: 1
 
-      #enable-auto-commit: IGNORED #See by.bal.server.api.kafka.config.KafkaConfig #/!\Если задано false, то во всех консумерах нужно делать комит саммому
+      enable-auto-commit: false #See by.bal.server.api.kafka.config.KafkaConfig #/!\Если задано false, то во всех консумерах нужно делать комит саммому
       #value-deserializer: IGNORED #See by.bal.server.api.kafka.config.KafkaConfig
       #properties:
         #spring.json.trusted.packages: IGNORED #See by.bal.server.api.kafka.config.KafkaConfig
@@ -73,7 +73,7 @@ spring:
       #/!\ Если ack-mode manual и enable-auto-commit=false, то даже если консюмер не принимает Acknowledgment, то автокомит не происходит
       ack-mode: manual #Используется только если enable-auto-commit=false
       concurrency: 1 #Single-threaded
-      #type: single #See by.bal.server.api.kafka.config.KafkaConfig #single / batch
+      type: single #See by.bal.server.api.kafka.config.KafkaConfig #single / batch
 
     retry: #Non-Blocking Retries /!\NOT supported with Batch Listeners and Container Transactions
       topic:
@@ -135,6 +135,7 @@ bal-server:
       enabled: true
     kafka:
       enabled: true
+      mode: messaging # messaging, normal
     grpc:
       enabled: false
     websocket:

@@ -4,6 +4,7 @@ import by.bal.server.api.kafka.Pet;
 import io.micrometer.core.instrument.config.validate.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBooleanProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.RetryableTopic;
@@ -17,6 +18,7 @@ import java.util.List;
 
 @Component
 @ConditionalOnBooleanProperty(name = "bal-server.api.kafka.enabled", matchIfMissing = true)
+@ConditionalOnProperty(name = "bal-server.api.kafka.mode", havingValue = "normal")
 // Ретраи и отправка в DLT на уровне KafkaListenerErrorHandler
 // @RetryableTopic(
 //         attempts = "4", // Общее количество попыток (включая первую)
@@ -25,14 +27,14 @@ import java.util.List;
 //         exclude = {ValidationException.class}, // Какие исключения не повторять (опционально)
 //         dltTopicSuffix = ".dlt" // Суффикс для DLT
 // )
-@KafkaListener(
-        topics = "bal-topic-pet",
-        errorHandler = "simpleListenerErrorHandler"
-        // properties = { // Можно вот так указывать какие-то проперти для конкретного KafkaListener
-        //         "max.poll.interval.ms:60000",
-        //         "isolation.level=read_committed"
-        // }
-)
+// @KafkaListener(
+//         topics = "bal-topic-pet",
+//         errorHandler = "simpleListenerErrorHandler"
+//         // properties = { // Можно вот так указывать какие-то проперти для конкретного KafkaListener
+//         //         "max.poll.interval.ms:60000",
+//         //         "isolation.level=read_committed"
+//         // }
+// )
 @Slf4j
 public class SimplePetConsumer {
     private static void mayBeException(Pet pet) {
@@ -68,7 +70,7 @@ public class SimplePetConsumer {
 
     // Реализация @KafkaHandler для single режима
     // (!) poll() в любом случае принимает батч сообщений, просто они по-одному передаются в KafkaHandler
-    @KafkaHandler
+    @KafkaListener(topics = "bal-topic-pet", errorHandler = "simpleListenerErrorHandler")
     void consume(Acknowledgment ack, @Payload Pet pet) {
         log.info("[<<< bal-topic-pet]: {}", pet);
         mayBeException(pet);

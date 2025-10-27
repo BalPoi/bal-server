@@ -13,7 +13,7 @@ public record Pet(
         String type
 ) {
     private static final Random RANDOM = new Random();
-    private static final List<String> NAMES = List.of("Барсик", "Зорька", "Кеша", "Мурка", "Пушистик", "Рекс", "Снежок", "Шарик", "Сёма", "Error");
+    private static final List<String> NAMES = List.of("Барсик", "Зорька", "Кеша", "Мурка", "Пушистик", "Рекс", "Снежок", "Шарик", "Сёма"/*, "Error"*/);
     private static final List<String> TYPES = List.of("Кот", "Кролик", "Морская свинка", "Попугай", "Рыбка", "Собака", "Хомяк", "Черепаха");
 
     public static Stream<Pet> generate() {

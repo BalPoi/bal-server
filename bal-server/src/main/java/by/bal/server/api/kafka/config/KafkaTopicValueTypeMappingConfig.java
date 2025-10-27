@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.header.Headers;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 
@@ -17,6 +18,7 @@ import java.util.Map;
  * Конфигурация, которая настраивает сопоставление топиков определённым java классам для десериализации содержимого
  */
 @Configuration(proxyBeanMethods = false)
+@ConditionalOnProperty(name = "bal-server.api.kafka.mode", havingValue = "normal")
 @Slf4j
 public class KafkaTopicValueTypeMappingConfig {
     private static final String KAFKA_VALUE_TYPE_METHOD_NOT_FOUND =

@@ -3,6 +3,7 @@ package by.bal.server.api.kafka.consumer;
 import by.bal.server.api.kafka.Man;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBooleanProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @Component
 @ConditionalOnBooleanProperty(name = "bal-server.api.kafka.enabled", matchIfMissing = true)
+@ConditionalOnProperty(name = "bal-server.api.kafka.mode", havingValue = "normal")
 @KafkaListener(groupId = "bal-server-ack", topics = "bal-topic")
 @Slf4j
 public class AckConsumer {
