@@ -1,21 +1,33 @@
 package by.bal.server.api.kafka.pet;
 
 import by.bal.server.api.kafka.Pet;
+import io.micrometer.core.instrument.config.validate.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBooleanProperty;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.annotation.RetryableTopic;
 import org.springframework.kafka.listener.BatchListenerFailedException;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.retry.annotation.Backoff;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
 @ConditionalOnBooleanProperty(name = "bal-server.api.kafka.enabled", matchIfMissing = true)
+// Ретраи и отправка в DLT на уровне KafkaListenerErrorHandler
+// @RetryableTopic(
+//         attempts = "4", // Общее количество попыток (включая первую)
+//         backoff = @Backoff(delay = 1000, multiplier = 2, maxDelay = 10000), // Экспоненциальная задержка
+//         // include = {MyRetryableException.class}, // Какие исключения повторять (опционально)
+//         exclude = {ValidationException.class}, // Какие исключения не повторять (опционально)
+//         dltTopicSuffix = ".dlt" // Суффикс для DLT
+// )
 @KafkaListener(
-        topics = "bal-topic-pet"
+        topics = "bal-topic-pet",
+        errorHandler = "simpleListenerErrorHandler"
         // properties = { // Можно вот так указывать какие-то проперти для конкретного KafkaListener
         //         "max.poll.interval.ms:60000",
         //         "isolation.level=read_committed"
