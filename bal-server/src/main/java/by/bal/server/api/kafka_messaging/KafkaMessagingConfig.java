@@ -14,6 +14,8 @@ import org.springframework.kafka.listener.DefaultErrorHandler;
 import org.springframework.kafka.support.converter.ConversionException;
 import org.springframework.kafka.support.converter.JsonMessageConverter;
 import org.springframework.kafka.support.converter.StringJsonMessageConverter;
+import org.springframework.kafka.support.mapping.DefaultJackson2JavaTypeMapper;
+import org.springframework.kafka.support.mapping.Jackson2JavaTypeMapper;
 
 @Configuration
 @ConditionalOnProperty(name = "bal-server.api.kafka.mode", havingValue = "messaging")
@@ -21,7 +23,16 @@ public class KafkaMessagingConfig {
 
     @Bean
     public JsonMessageConverter jsonMessageConverter(ObjectMapper objectMapper) {
-        return new StringJsonMessageConverter(objectMapper);
+        var messageConverter = new StringJsonMessageConverter(objectMapper);
+
+        // Переопределение тайпмапера нужно обязательно, если в одном KafkaListener несколько KafkaHandlers
+        DefaultJackson2JavaTypeMapper typeMapper = new DefaultJackson2JavaTypeMapper();
+        typeMapper.addTrustedPackages("by.bal.server.api.kafka");
+        typeMapper.setTypePrecedence(Jackson2JavaTypeMapper.TypePrecedence.TYPE_ID);
+
+        messageConverter.setTypeMapper(typeMapper);
+
+        return messageConverter;
     }
 
     // @Bean

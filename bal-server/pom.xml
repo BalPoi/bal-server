@@ -15,20 +15,6 @@
     <name>bal-server</name>
     <description>bal-server</description>
 
-    <url/>
-    <licenses>
-        <license/>
-    </licenses>
-    <developers>
-        <developer/>
-    </developers>
-    <scm>
-        <connection/>
-        <developerConnection/>
-        <tag/>
-        <url/>
-    </scm>
-
     <properties>
         <start-class>by.bal.server.BalServerApplication</start-class>
 

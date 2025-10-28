@@ -16,7 +16,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
-// @Component // В общем не разобрался я как такой консюмер прописать, да и надеюсь не придётся из одного топика разные сообщенения читать...
+// Обязательная конфига в by.bal.server.api.kafka_messaging.KafkaMessagingConfig.jsonMessageConverter
+// Чтобы нормально определялся тип сообщения
+
+@Component
 @ConditionalOnProperty(name = "bal-server.api.kafka.mode", havingValue = "messaging")
 @KafkaListener(topics = "bal-topic-pet-message-many-types")
 @Slf4j

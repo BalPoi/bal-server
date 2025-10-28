@@ -32,10 +32,9 @@ spring:
     bootstrap-servers: localhost:9092
     #Поведение продюсеров как и консюмеров можно задавать с конфигаз Kafka, так и переопределять тут
     producer: #Проперти для ProducerFactory
-      #-1 -
-      # 0 -
-      # 1 -
-      # all -
+      # 0 - The producer doesn’t wait for a reply from the broker. It assumes that the message is sent successfully
+      # 1 - The producer receives a successful response from the broker the moment the leader replica receives the message
+      # all/-1 - The producer receives a success response from the broker once all in-sync replicas receive the message
       acks: all
       #При пропертях batch.size и linger.ms паблищер аккумулирует в батч иенты и отправляет только
       #если прошло linger.ms или уже набрался batch-size
@@ -123,10 +122,6 @@ spring:
 #Создаваемые бины: ConcurrentKafkaListenerContainerFactory, KafkaListenerContainerFactory
 #Условие активации: Наличие аннотации @EnableKafka и класса KafkaListenerContainerFactory в classpath
 #Взаимосвязь: Дочерняя, использует бины (например, ConsumerFactory) из KafkaAutoConfiguration
-#
-
-
-
 
 #====Service properties====
 bal-server:
