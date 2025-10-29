@@ -6,8 +6,8 @@ logging:
     console: "%d{HH:mm:ss.SSS} [%-16.16thread] %highlight(%-5level) %clr(%-32.32logger{32}){cyan} %msg%n"
   level:
     root: INFO
-    org.apache.kafka.clients.consumer.ConsumerConfig: off
-    org.apache.kafka.clients.producer.ProducerConfig: off
+#    org.apache.kafka.clients.consumer.ConsumerConfig: off
+#    org.apache.kafka.clients.producer.ProducerConfig: off
 
 spring:
   application:
@@ -40,9 +40,9 @@ spring:
       #если прошло linger.ms или уже набрался batch-size
       batch-size: 16384 #Максимальный размер батча [16384]
       properties: #Доп проперти, обычно получаемые от Kafka брокера
-        linger:
-          ms: 1000 #Время, которое даётся на сборку батча [5ms]
+        linger.ms: 1000 #Время, которое даётся на сборку батча [5ms]
       #value-serializer: IGNORED #See by.bal.server.api.kafka.config.KafkaConfig
+
     consumer: #Проперти для ConsumerFactory
       group-id: bal-server #Задаёт всем консюмерам единый group id
 
@@ -130,7 +130,7 @@ bal-server:
       enabled: true
     kafka:
       enabled: true
-      mode: messaging # messaging, normal
+      mode: messaging # normal, normal
     grpc:
       enabled: false
     websocket:

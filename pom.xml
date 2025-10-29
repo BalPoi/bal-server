@@ -10,7 +10,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <groupId>by.bal</groupId>
+    <groupId>by.bal.server</groupId>
     <artifactId>bal-server-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
@@ -18,6 +18,8 @@
     <modules>
         <module>bal-server-api</module>
         <module>bal-server</module>
+        <module>bal-kafka-streams</module>
+        <module>bal-kafka-databind</module>
     </modules>
 
     <name>bal-server-parent</name>

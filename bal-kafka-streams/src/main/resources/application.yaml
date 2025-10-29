@@ -6,8 +6,6 @@ logging:
     console: "%d{HH:mm:ss.SSS} [%-16.16thread] %highlight(%-5level) %clr(%-32.32logger{32}){cyan} %msg%n"
   level:
     root: INFO
-    org.apache.kafka.clients.consumer.ConsumerConfig: off
-    org.apache.kafka.clients.producer.ProducerConfig: off
 
 spring:
   application:
@@ -15,19 +13,27 @@ spring:
 
   kafka:
     bootstrap-servers: localhost:9092
-    producer:
-      acks: all
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-    consumer:
-      group-id: bal-kafka-streams
-      auto-offset-reset: earliest
-      enable-auto-commit: false
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      #properties:
-        #spring.json.trusted.packages: IGNORED
-    listener:
-      ack-mode: manual
-      concurrency: 1
-      type: single
+    streams:
+      bootstrap-servers: localhost:9092
+      properties: #org.apache.kafka.common.serialization.Serdes.StringSerde
+        default:
+          key:
+            serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+          value:
+            serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+#    producer:
+#      acks: all
+#      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+#      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+#    consumer:
+#      group-id: bal-kafka-streams
+#      auto-offset-reset: earliest
+#      enable-auto-commit: false
+#      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+#      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+#      #properties:
+#        #spring.json.trusted.packages: IGNORED
+#    listener:
+#      ack-mode: manual
+#      concurrency: 1
+#      type: single

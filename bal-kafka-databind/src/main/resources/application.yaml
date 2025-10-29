@@ -1,0 +1,47 @@
+server:
+  port: 8080
+
+logging:
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%-16.16thread] %highlight(%-5level) %clr(%-32.32logger{32}){cyan} %msg%n"
+  level:
+    root: INFO
+
+spring:
+  application:
+    name: bal-kafka-databind
+
+  cloud:
+    function:
+      definition: |- #Имена бинов Consumer - консюмеры, Supplier - продюсеры, Function и то и то
+        balConsumerStr;
+        balProducerStr;
+        balConsumer;
+        balProcessor;
+        ackBalConsumer
+    stream:
+      function:
+        autodetect: false
+      bindings:
+        balProducerStr-out-0:
+          destination: bind-topic
+        balConsumerStr-in-0:
+          destination: bind-topic
+          group: bal-kafka-bind-1
+        componentConsumer-in-0:
+          destination: bind-topic
+          group: bal-kafka-bind-2
+        balProcessor-in-0:
+          destination: bind-topic
+        balProcessor-out-0:
+          destination: bind-topic-uppercase
+        ackBalConsumer-in-0:
+          destination: bind-topic
+
+      kafka:
+        binder:
+          brokers: localhost:9092
+        bindings:
+          ackBalConsumer-in-0:
+            consumer:
+              ackMode: manual

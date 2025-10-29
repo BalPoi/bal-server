@@ -1,0 +1,21 @@
+= Spring Cloud Streams
+
+* Bindings — a collection of Java functions to process, transform, or send messages
+* Binder — messaging-middleware implementation such as Kafka or RabbitMQ
+* Channel — represents the communication pipe between messaging-middleware and the application
+* Message Schemas — used for serialization and deserialization of messages, these schemas can be statically read from a location or loaded dynamically, supporting the evolution of domain object types
+* StreamListeners — message-handling methods in beans that will be automatically invoked on a message from the channel after the MessageConverter does the serialization/deserialization between middleware-specific events and domain object types or POJOs
+
+.application.yaml
+[source,yaml]
+----
+spring:
+  cloud:
+    stream:
+      bindings:
+        enrichLogMessage-in-0: #<1>
+          destination: queue.log.messages
+        enrichLogMessage-out-0:
+          destination: queue.pretty.log.messages
+----
+<1> Lib
