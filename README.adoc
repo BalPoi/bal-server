@@ -1,0 +1,23 @@
+= Bal's Java Tech Cookbook
+
+== Included techs list:
+* Kafka
+** Kafka Streams
+** kafka-databind
+* gRPC
+* REST
+* Reactive REST
+* WebSocket
+
+== Todo techs list:
+* SOAP
+* GraphQL
+* ELK stack
+* Grafana + Prometheus
+* MongoDB
+* RabbitMQ
+* Schedulers
+
+TODO:
+
+- Рассмотреть работу с WebSocket через spring-messages
