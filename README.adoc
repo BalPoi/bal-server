@@ -1,4 +1,5 @@
 = Bal's Java Tech Cookbook
+Pavel Bal <balpoi000@gmail.com>
 
 == Included techs list:
 * Kafka
@@ -21,3 +22,5 @@
 TODO:
 
 - Рассмотреть работу с WebSocket через spring-messages
+
+Для запуска инфраструктуры использовать скрипт `start-infrastructure.sh` в корне.
